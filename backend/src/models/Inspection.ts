@@ -30,6 +30,8 @@ export interface IInspection extends Document {
   status: InspectionStatus;
   /** Storage references (paths or cloud keys) for uploaded images */
   imageReferences: string[];
+  /** Count of onions detected by AI inference, updated after analysis */
+  totalOnionsDetected: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -78,6 +80,11 @@ const inspectionSchema = new Schema<IInspection>(
     imageReferences: {
       type: [String],
       default: [],
+    },
+    totalOnionsDetected: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
   },
   {

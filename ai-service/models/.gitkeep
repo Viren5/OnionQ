@@ -1,0 +1,2 @@
+# Place your real trained OnionQ model weights here (e.g., onion_best.pt).
+# Note: Do not commit large binary weights to Git; instead mount or download during deployment.

@@ -51,17 +51,22 @@ export interface Inspection {
 
 // ─── Onion Analysis Types ────────────────────────────────────────────────────
 
+/**
+ * DefectType maps real YOLO class outcomes to stored defect labels.
+ * Only values derived from actual model inference are used.
+ */
 export type DefectType =
-  | 'none'
-  | 'mechanical_damage'
-  | 'disease'
-  | 'sunburn'
-  | 'sprouting'
-  | 'rotting'
-  | 'double_onion'
-  | 'split'
+  | 'none'       // healthy
+  | 'disease'    // mold
+  | 'rotting'    // rotten
+  | 'sprouting'  // sprouted
   | 'other';
 
+/**
+ * OnionClassification derived from real detection result.
+ * grade_a = healthy, rejected = mold/rotten/sprouted, unclassified = uncertain.
+ * No AGMARK thresholds are invented — grading pending official verification.
+ */
 export type OnionClassification = 'grade_a' | 'urs' | 'rejected' | 'unclassified';
 
 export type VerificationStatus = 'not_required' | 'pending' | 'verified' | 'overridden';
@@ -88,8 +93,10 @@ export interface OnionAnalysis {
   detectionConfidence: number;
   sizeEstimate?: SizeEstimate;
   shape?: string;
+  /** Real detected defect flags from AI model inference */
   detectedDefects: DefectType[];
   classification: OnionClassification;
+  /** Raw AI label e.g. "healthy (94.2%)" — not an invented grade */
   aiClassificationGrade?: string;
   verificationStatus: VerificationStatus;
   createdAt: string;
@@ -114,6 +121,10 @@ export interface Verification {
 
 // ─── Report & Grading Types ──────────────────────────────────────────────────
 
+/**
+ * not_graded = no official AGMARK standard has been applied.
+ * Grade is pending manual verification by an authorised inspector.
+ */
 export type FinalGrade = 'grade_a' | 'urs' | 'rejected' | 'mixed' | 'not_graded';
 
 export interface GradingRuleSnapshot {

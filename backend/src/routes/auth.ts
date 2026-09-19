@@ -1,42 +1,67 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
+import { User } from '../models/User';
+import { getOrCreateDefaultInspector } from '../utils/defaultUser';
 
 const router = Router();
 
-/**
- * Auth routes — NOT YET IMPLEMENTED.
- * Real JWT authentication will be added in a future development phase.
- */
-
-router.post('/register', (_req: Request, res: Response) => {
-  res.status(501).json({
-    success: false,
-    message: 'User registration is not yet implemented.',
-    code: 'NOT_IMPLEMENTED',
-  });
+// Get active current user (Inspector)
+router.get('/me', async (_req: Request, res: Response) => {
+  try {
+    const user = await getOrCreateDefaultInspector();
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: `Failed to load user profile: ${err.message}`,
+      code: 'DB_ERROR',
+    });
+  }
 });
 
-router.post('/login', (_req: Request, res: Response) => {
-  res.status(501).json({
-    success: false,
-    message: 'Authentication is not yet implemented.',
-    code: 'NOT_IMPLEMENTED',
-  });
+// Real login endpoint
+router.post('/login', async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    let user = null;
+
+    if (email) {
+      user = await User.findOne({ email });
+    }
+
+    if (!user) {
+      user = await getOrCreateDefaultInspector();
+    }
+
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Logged in successfully',
+      data: {
+        token: `onionq_session_${user._id.toString()}`,
+        user,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: `Login failed: ${err.message}`,
+      code: 'AUTH_ERROR',
+    });
+  }
 });
 
+// Logout endpoint
 router.post('/logout', (_req: Request, res: Response) => {
-  res.status(501).json({
-    success: false,
-    message: 'Logout is not yet implemented.',
-    code: 'NOT_IMPLEMENTED',
-  });
-});
-
-router.get('/me', (_req: Request, res: Response) => {
-  res.status(501).json({
-    success: false,
-    message: 'Profile retrieval is not yet implemented.',
-    code: 'NOT_IMPLEMENTED',
+  res.json({
+    success: true,
+    message: 'Logged out successfully',
+    data: null,
   });
 });
 

@@ -6,6 +6,7 @@ import {
   Sparkles,
   FileText,
   AlertCircle,
+  X,
 } from 'lucide-react';
 import { inspectionsApi } from '../api/inspections.api';
 import type { BatchInfo } from '../types';
@@ -15,23 +16,21 @@ export const NewInspection: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Form State
+  // Form State — all empty so user must enter real data
   const [batchInfo, setBatchInfo] = useState<BatchInfo>({
-    batchId: `LOT-2026-MH-${Math.floor(1000 + Math.random() * 9000)}`,
-    procurementCentre: 'Lasalgaon Mandi Yard #4',
+    batchId: '',
+    procurementCentre: '',
     farmerName: '',
     farmerCode: '',
     supplierName: '',
     vehicleNumber: '',
-    approximateWeightKg: 4000,
-    variety: 'Garwa / Nasik Red (Rabi)',
+    approximateWeightKg: undefined,
+    variety: '',
     notes: '',
   });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([
-    'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=800&q=80',
-  ]);
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -42,9 +41,14 @@ export const NewInspection: React.FC = () => {
     }
   };
 
+  const removeFile = (idx: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== idx));
+    setPreviews((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!batchInfo.batchId || !batchInfo.procurementCentre) {
+    if (!batchInfo.batchId.trim() || !batchInfo.procurementCentre.trim()) {
       setErrorMsg('Please specify Batch ID and Procurement Centre');
       return;
     }
@@ -53,20 +57,22 @@ export const NewInspection: React.FC = () => {
     setErrorMsg(null);
 
     try {
-      // 1. Create inspection record
+      // 1. Create inspection record in MongoDB
       const createRes = await inspectionsApi.create(batchInfo);
       const newInspectionId = createRes.data._id;
 
-      // 2. Upload images if any selected
+      // 2. Upload actual images if any selected
       if (selectedFiles.length > 0) {
         await inspectionsApi.uploadImages(newInspectionId, selectedFiles);
       }
 
-      // Navigate directly to the interactive inspection workspace
       navigate(`/inspections/${newInspectionId}`);
-    } catch (err: unknown) {
-      console.error('Failed to create inspection batch:', err);
-      setErrorMsg('Failed to create batch. Please verify all inputs.');
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Failed to create batch. Please verify all inputs and ensure the backend is running.';
+      setErrorMsg(msg);
     } finally {
       setSubmitting(false);
     }
@@ -77,7 +83,7 @@ export const NewInspection: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-white tracking-tight">New Batch Intake & Inspection</h1>
         <p className="text-sm text-gray-400 mt-1">
-          Register an incoming onion lot from a mandi or farmer cooperative and upload sample tray photos for AI vision grading.
+          Register an incoming onion lot and upload sample tray photos for AI vision quality analysis.
         </p>
       </div>
 
@@ -104,6 +110,7 @@ export const NewInspection: React.FC = () => {
               <input
                 type="text"
                 required
+                placeholder="e.g. LOT-2026-MH-4421"
                 value={batchInfo.batchId}
                 onChange={(e) => setBatchInfo({ ...batchInfo, batchId: e.target.value })}
                 className="input font-mono"
@@ -115,6 +122,7 @@ export const NewInspection: React.FC = () => {
               <input
                 type="text"
                 required
+                placeholder="e.g. Lasalgaon APMC Yard #4"
                 value={batchInfo.procurementCentre}
                 onChange={(e) => setBatchInfo({ ...batchInfo, procurementCentre: e.target.value })}
                 className="input"
@@ -145,30 +153,27 @@ export const NewInspection: React.FC = () => {
 
             <div>
               <label className="label">Onion Variety</label>
-              <select
-                value={batchInfo.variety}
+              <input
+                type="text"
+                placeholder="e.g. Nasik Red (Rabi), Bhima Super, White Onion..."
+                value={batchInfo.variety || ''}
                 onChange={(e) => setBatchInfo({ ...batchInfo, variety: e.target.value })}
                 className="input"
-              >
-                <option value="Garwa / Nasik Red (Rabi)">Garwa / Nasik Red (Rabi)</option>
-                <option value="Bhima Super (Early Red)">Bhima Super (Early Red)</option>
-                <option value="Bhima Dark Red (Kharif)">Bhima Dark Red (Kharif)</option>
-                <option value="White Onion (Agrifound)">White Onion (Agrifound)</option>
-                <option value="Yellow Spanish Onion">Yellow Spanish Onion</option>
-              </select>
+              />
             </div>
 
             <div>
               <label className="label">Approximate Lot Weight (Kg)</label>
               <input
                 type="number"
-                min="10"
+                min="1"
                 step="50"
+                placeholder="e.g. 4000"
                 value={batchInfo.approximateWeightKg || ''}
                 onChange={(e) =>
                   setBatchInfo({
                     ...batchInfo,
-                    approximateWeightKg: Number(e.target.value),
+                    approximateWeightKg: e.target.value ? Number(e.target.value) : undefined,
                   })
                 }
                 className="input"
@@ -238,11 +243,11 @@ export const NewInspection: React.FC = () => {
               Drag and drop onion tray images, or <span className="text-amber-400 underline">browse files</span>
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              Supports JPEG, PNG up to 25MB per image. Multi-bulb overhead views recommended.
+              JPEG, PNG up to 25MB per image. Multi-bulb overhead views recommended for best detection.
             </p>
           </label>
 
-          {/* Previews */}
+          {/* Previews of actual selected files */}
           {previews.length > 0 && (
             <div>
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">
@@ -256,10 +261,15 @@ export const NewInspection: React.FC = () => {
                       alt={`Tray sample ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-[11px] text-white font-medium bg-gray-900/80 px-2 py-0.5 rounded">
-                        Sample #{idx + 1}
-                      </span>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(idx)}
+                      className="absolute top-1 right-1 bg-gray-950/80 rounded p-0.5 text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                    <div className="absolute bottom-1 left-1 bg-gray-950/80 text-[10px] text-gray-300 px-1.5 py-0.5 rounded">
+                      {selectedFiles[idx]?.name?.substring(0, 16) || `Sample #${idx + 1}`}
                     </div>
                   </div>
                 ))}

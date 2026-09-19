@@ -1,44 +1,26 @@
-import { apiClient, requestWithMockFallback } from './client';
+import { apiClient } from './client';
 import type { ApiResponse, User } from '../types';
-import { mockCurrentUser } from './mockData';
 
 export const authApi = {
   getCurrentUser: async (): Promise<ApiResponse<User>> => {
-    return requestWithMockFallback<ApiResponse<User>>(
-      () => apiClient.get<ApiResponse<User>>('/auth/me'),
-      () => ({
-        success: true,
-        data: mockCurrentUser,
-      })
-    );
+    const res = await apiClient.get<ApiResponse<User>>('/auth/me');
+    return res.data;
   },
 
-  login: async (email: string, _password: string): Promise<ApiResponse<{ token: string; user: User }>> => {
-    return requestWithMockFallback<ApiResponse<{ token: string; user: User }>>(
-      () => apiClient.post('/auth/login', { email, _password }),
-      () => {
-        const token = 'mock_jwt_token_onionq_inspector';
-        localStorage.setItem('onionq_token', token);
-        return {
-          success: true,
-          message: 'Logged in successfully',
-          data: {
-            token,
-            user: { ...mockCurrentUser, email },
-          },
-        };
-      }
-    );
+  login: async (email: string, password: string): Promise<ApiResponse<{ token: string; user: User }>> => {
+    const res = await apiClient.post<ApiResponse<{ token: string; user: User }>>('/auth/login', {
+      email,
+      password,
+    });
+    if (res.data.data?.token) {
+      localStorage.setItem('onionq_token', res.data.data.token);
+    }
+    return res.data;
   },
 
   logout: async (): Promise<ApiResponse<null>> => {
     localStorage.removeItem('onionq_token');
-    return requestWithMockFallback<ApiResponse<null>>(
-      () => apiClient.post('/auth/logout'),
-      () => ({
-        success: true,
-        data: null,
-      })
-    );
+    const res = await apiClient.post<ApiResponse<null>>('/auth/logout');
+    return res.data;
   },
 };

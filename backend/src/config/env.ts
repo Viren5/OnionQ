@@ -30,7 +30,7 @@ export const config = {
   jwtSecret: process.env['JWT_SECRET'] as string,
   jwtExpiresIn: process.env['JWT_EXPIRES_IN'] ?? '7d',
   frontendUrl: process.env['FRONTEND_URL'] ?? 'http://localhost:5173',
-  aiServiceUrl: process.env['AI_SERVICE_URL'] ?? 'http://localhost:8000',
+  aiServiceUrl: process.env['AI_SERVICE_URL'] ?? 'http://localhost:8001',
   storageType: (process.env['STORAGE_TYPE'] ?? 'local') as 'local' | 'cloud',
   uploadDir: process.env['UPLOAD_DIR'] ?? './uploads',
   logLevel: process.env['LOG_LEVEL'] ?? 'info',
