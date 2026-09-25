@@ -148,11 +148,6 @@ export const InspectionDetail: React.FC = () => {
     return 'border-blue-500 bg-blue-500/10 hover:border-blue-300';
   };
 
-  const getConditionLabel = (onion: OnionAnalysis) => {
-    const grade = onion.aiClassificationGrade || '';
-    return grade || onion.classification.replace('_', ' ');
-  };
-
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Navigation & Header */}

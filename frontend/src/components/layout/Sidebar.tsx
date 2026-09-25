@@ -60,7 +60,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar Panel */}
       <aside
         className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-900 border-r border-gray-800 flex flex-col transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
         {/* Brand Header */}
@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <span className="text-gray-950 font-black text-base">Q</span>
             </div>
             <div>
-              <span className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+              <span className="text-[1.3rem] font-bold tracking-tight text-white flex items-center gap">
                 Onion<span className="text-amber-400">Q</span>
               </span>
               <p className="text-[10px] text-gray-400 font-medium tracking-wide">
@@ -102,8 +102,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               className={({ isActive }) =>
                 `flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                   isActive
-                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/60'
+                    ? "bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm"
+                    : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/60"
                 }`
               }
             >
@@ -112,7 +112,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${item.badgeColor}`}>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${item.badgeColor}`}
+                >
                   {item.badge}
                 </span>
               )}
@@ -132,9 +134,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <Activity className="w-2.5 h-2.5" /> 98.4 ms
               </span>
             </div>
-            <p className="text-[11px] text-gray-400 leading-snug">
-              YOLOv8x-Onion AgriStandard (Agmark 2024 compliance active)
-            </p>
           </div>
         </div>
       </aside>

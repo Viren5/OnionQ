@@ -24,16 +24,16 @@ function validateEnv(): void {
 }
 
 export const config = {
-  env: process.env['NODE_ENV'] ?? 'development',
-  port: parseInt(process.env['PORT'] ?? '3001', 10),
-  mongodbUri: process.env['MONGODB_URI'] as string,
-  jwtSecret: process.env['JWT_SECRET'] as string,
-  jwtExpiresIn: process.env['JWT_EXPIRES_IN'] ?? '7d',
-  frontendUrl: process.env['FRONTEND_URL'] ?? 'http://localhost:5173',
-  aiServiceUrl: process.env['AI_SERVICE_URL'] ?? 'http://localhost:8001',
-  storageType: (process.env['STORAGE_TYPE'] ?? 'local') as 'local' | 'cloud',
-  uploadDir: process.env['UPLOAD_DIR'] ?? './uploads',
-  logLevel: process.env['LOG_LEVEL'] ?? 'info',
+  env: process.env["NODE_ENV"] ?? "development",
+  port: parseInt(process.env["PORT"] ?? "3001", 10),
+  mongodbUri: process.env["MONGODB_URI"] as string,
+  jwtSecret: process.env["JWT_SECRET"] as string,
+  jwtExpiresIn: process.env["JWT_EXPIRES_IN"] ?? "7d",
+  frontendUrl: process.env["FRONTEND_URL"] ?? "http://localhost:5173",
+  aiServiceUrl: process.env["AI_SERVICE_URL"] ?? "http://localhost:8000",
+  storageType: (process.env["STORAGE_TYPE"] ?? "local") as "local" | "cloud",
+  uploadDir: process.env["UPLOAD_DIR"] ?? "./uploads",
+  logLevel: process.env["LOG_LEVEL"] ?? "info",
 } as const;
 
 export { validateEnv };

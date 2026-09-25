@@ -90,7 +90,8 @@ export const ReportView: React.FC = () => {
             Certificate of Quality Assessment & Agmark Grading
           </h1>
           <p className="text-xs text-gray-400 print:text-gray-600">
-            Issued in accordance with Agricultural Produce (Grading and Marking) Act & National Agmark Standards
+            Issued in accordance with Agricultural Produce (Grading and Marking)
+            Act & National Agmark Standards
           </p>
         </div>
 
@@ -102,10 +103,30 @@ export const ReportView: React.FC = () => {
             </div>
             <div>
               <span className="text-xs text-gray-400 uppercase tracking-wider block print:text-gray-500">
-                Declared Agmark Grade
+                Declared Quality Grade
               </span>
-              <span className="text-xl font-extrabold text-emerald-400 uppercase tracking-tight print:text-emerald-700">
-                Grade A — Premium Commercial Quality
+              <span
+                className={`text-xl font-extrabold uppercase tracking-tight ${
+                  report.summary.finalGrade === "grade_a"
+                    ? "text-emerald-400 print:text-emerald-700"
+                    : report.summary.finalGrade === "rejected"
+                      ? "text-red-400 print:text-red-700"
+                      : report.summary.finalGrade === "urs"
+                        ? "text-amber-400 print:text-amber-700"
+                        : report.summary.finalGrade === "mixed"
+                          ? "text-blue-400 print:text-blue-700"
+                          : "text-emerald-400 print:text-gray-700"
+                }`}
+              >
+                {report.summary.finalGrade === "grade_a"
+                  ? "Grade A — Premium Commercial Quality"
+                  : report.summary.finalGrade === "rejected"
+                    ? "REJECTED — Defective / Below Standard"
+                    : report.summary.finalGrade === "urs"
+                      ? "URS — Under-Sized / Secondary"
+                      : report.summary.finalGrade === "mixed"
+                        ? "MIXED GRADE LOT"
+                        : "Grade A — Premium Commercial Quality"}
               </span>
             </div>
           </div>
@@ -113,7 +134,9 @@ export const ReportView: React.FC = () => {
           <div className="flex items-center gap-3 bg-gray-900 px-3 py-2 rounded-lg border border-gray-800 print:bg-white print:border-gray-300">
             <QrCode className="w-8 h-8 text-amber-400 shrink-0 print:text-black" />
             <div className="text-right">
-              <span className="text-[10px] text-gray-400 block uppercase print:text-gray-600">Verification Token</span>
+              <span className="text-[10px] text-gray-400 block uppercase print:text-gray-600">
+                Verification Token
+              </span>
               <span className="font-mono text-xs font-bold text-amber-400 print:text-black">
                 {report.qrVerificationToken}
               </span>
@@ -137,7 +160,7 @@ export const ReportView: React.FC = () => {
               <User className="w-3 h-3" /> Producer / Farmer
             </span>
             <span className="font-semibold text-white print:text-black">
-              {inspection.batchInfo.farmerName || 'Direct Mandi Inflow'}
+              {inspection.batchInfo.farmerName || "Direct Mandi Inflow"}
             </span>
           </div>
 
@@ -146,10 +169,10 @@ export const ReportView: React.FC = () => {
               <Calendar className="w-3 h-3" /> Date of Inspection
             </span>
             <span className="font-medium text-white print:text-black">
-              {new Date(report.createdAt).toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
+              {new Date(report.createdAt).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
               })}
             </span>
           </div>
@@ -159,7 +182,9 @@ export const ReportView: React.FC = () => {
               <Scale className="w-3 h-3" /> Lot Net Weight
             </span>
             <span className="font-semibold text-white print:text-black">
-              {inspection.batchInfo.approximateWeightKg ? `${inspection.batchInfo.approximateWeightKg.toLocaleString()} Kg` : '--'}
+              {inspection.batchInfo.approximateWeightKg
+                ? `${inspection.batchInfo.approximateWeightKg.toLocaleString()} Kg`
+                : "--"}
             </span>
           </div>
         </div>
@@ -184,14 +209,17 @@ export const ReportView: React.FC = () => {
                 <tbody>
                   {summary.classificationDistribution.map((entry, idx) => (
                     <tr key={idx}>
-                      <td className="font-semibold text-white print:text-black">{entry.label}</td>
+                      <td className="font-semibold text-white print:text-black">
+                        {entry.label}
+                      </td>
                       <td className="font-mono">{entry.count} Bulbs</td>
                       <td className="font-mono font-bold text-amber-400 print:text-black">
                         {entry.percentage.toFixed(1)}%
                       </td>
                       <td>
                         <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-medium print:text-emerald-700">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Within Tolerance Limit
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Within
+                          Tolerance Limit
                         </span>
                       </td>
                     </tr>
@@ -219,17 +247,19 @@ export const ReportView: React.FC = () => {
                 <tbody>
                   {summary.sizeDistribution.map((entry, idx) => (
                     <tr key={idx}>
-                      <td className="font-medium text-white print:text-black">{entry.label}</td>
+                      <td className="font-medium text-white print:text-black">
+                        {entry.label}
+                      </td>
                       <td className="font-mono">{entry.count}</td>
                       <td className="font-mono text-gray-300 print:text-black">
                         {entry.percentage.toFixed(1)}%
                       </td>
                       <td className="text-xs text-gray-400 print:text-gray-600">
-                        {entry.label.includes('Large')
-                          ? 'Premium Export & Domestic Retail'
-                          : entry.label.includes('Medium')
-                          ? 'Standard General Consumption'
-                          : 'Processing / Dehydration'}
+                        {entry.label.includes("Large")
+                          ? "Premium Export & Domestic Retail"
+                          : entry.label.includes("Medium")
+                            ? "Standard General Consumption"
+                            : "Processing / Dehydration"}
                       </td>
                     </tr>
                   ))}
@@ -249,7 +279,9 @@ export const ReportView: React.FC = () => {
                   key={idx}
                   className="p-3 rounded-lg bg-gray-950/60 border border-gray-800 print:bg-gray-100 print:border-gray-200"
                 >
-                  <span className="text-[11px] text-gray-400 block print:text-gray-600">{def.label}</span>
+                  <span className="text-[11px] text-gray-400 block print:text-gray-600">
+                    {def.label}
+                  </span>
                   <div className="text-sm font-bold text-white print:text-black mt-0.5">
                     {def.percentage.toFixed(1)}% ({def.count})
                   </div>
@@ -263,10 +295,15 @@ export const ReportView: React.FC = () => {
         <div className="pt-6 border-t border-gray-800 print:border-gray-300 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-gray-400 print:text-gray-600">
           <div>
             <div className="text-white font-semibold print:text-black">
-              Standard: {summary.gradingRuleSnapshot?.standardName || 'National Agmark Standard 2024'}
+              Standard:{" "}
+              {summary.gradingRuleSnapshot?.standardName ||
+                "National Agmark Standard 2024"}
             </div>
             <div>
-              Rule Version: {summary.gradingRuleSnapshot?.ruleVersion || '2.4.1'} • Model Confidence: {( (summary.averageAiConfidence || 0.92) * 100).toFixed(1)}%
+              Rule Version:{" "}
+              {summary.gradingRuleSnapshot?.ruleVersion || "2.4.1"} • Model
+              Confidence:{" "}
+              {((summary.averageAiConfidence || 0.92) * 100).toFixed(1)}%
             </div>
           </div>
 
@@ -274,7 +311,9 @@ export const ReportView: React.FC = () => {
             <div className="font-bold text-white uppercase tracking-wider font-mono print:text-black">
               Certified Inspector #MH-NAS-04
             </div>
-            <div className="text-[11px]">Lasalgaon Quality Assurance Station</div>
+            <div className="text-[11px]">
+              Lasalgaon Quality Assurance Station
+            </div>
           </div>
         </div>
       </div>
