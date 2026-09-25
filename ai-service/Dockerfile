@@ -23,8 +23,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application source code
 COPY app/ ./app/
 
-# Create models directory (can be mounted as a volume at runtime)
-RUN mkdir -p /app/models
+# Copy trained YOLO model
+COPY models/ ./models/
 
 # Default environment configuration
 ENV HOST=0.0.0.0 \
