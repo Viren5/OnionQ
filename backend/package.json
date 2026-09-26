@@ -32,6 +32,9 @@
     "uuid": "^9.0.1",
     "winston": "^3.13.0"
   },
+  "engines": {
+    "node": "22.x"
+  },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
@@ -40,6 +43,6 @@
     "@types/node": "^20.14.2",
     "@types/uuid": "^9.0.8",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.5"
+    "typescript": "5.9.3"
   }
 }
