@@ -13,7 +13,7 @@ client = TestClient(app)
 
 def test_root_endpoint():
     """Verify that the root endpoint returns online status and navigation links."""
-    response = client.get("/")
+    response = client.get("C:\Users\viren\Downloads\OnionQ\OnionQ\ai-service\app\api\routes.py")
     assert response.status_code == 200
     data = response.json()
     assert data["service"] == "OnionQ AI Service"
@@ -26,7 +26,7 @@ def test_health_endpoint():
     Verify GET /health reports real service status.
     When no model file is installed, model_loaded must be false.
     """
-    response = client.get("/health")
+    response = client.get("C:\Users\viren\Downloads\OnionQ\OnionQ\ai-service\app\api\routes.py")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
